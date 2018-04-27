@@ -1,0 +1,17 @@
+{
+  "name": "overxue/slug",
+  "description": "test",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "XueCong",
+      "email": "xuecong98@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Overxue\\Slug\\": "src/"
+    }
+  }
+}
