@@ -1,6 +1,10 @@
 {
   "name": "overxue/slug",
-  "description": "test",
+  "description": "中文的 url slug",
+  "keywords": [
+    "slug",
+    "sdk"
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -8,7 +12,10 @@
       "email": "xuecong98@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    "php": ">=7.0",
+    "guzzlehttp/guzzle": "^6.3"
+  },
   "autoload": {
     "psr-4": {
       "Overxue\\Slug\\": "src/"
