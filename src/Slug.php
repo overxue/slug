@@ -13,13 +13,44 @@ class Slug
 
     protected $config;
 
-    public function __construct(Client $http, array $config)
+    public function __construct(Client $http, array $config = [])
     {
         $this->http = $http;
         $this->config = $config;
     }
 
     public function translate($text)
+    {
+        return $this->getTranslatedText($text);
+    }
+
+    private function getTranslatedText($text)
+    {
+        if ($this->isEnglish($text)) {
+            return str_slug($text);
+        }
+        $url = $this->getTranslateUrl($text);
+        // 发送 HTTP Get 请求
+        $response = $this->http->get($url);
+        $result = json_decode($response->getBody(), true);
+        if (isset($result['trans_result'][0]['dst'])) {
+            return str_slug($result['trans_result'][0]['dst']);
+        } else {
+            // 如果百度翻译没有结果，使用拼音作为后备计划。
+            return $this->pinyin($text);
+        }
+    }
+
+    private function isEnglish($text)
+    {
+        if (preg_match("/\p{Han}+/u", $text)) {
+            return false;
+        }
+        return true;
+    }
+
+    // 获取百度翻译api;
+    private function getTranslateUrl($text)
     {
         $appid = $this->config['appId'];
         $key = $this->config['appKey'];
@@ -38,16 +69,7 @@ class Slug
             "salt"  => $salt,
             "sign"  => $sign,
         ]);
-        // 发送 HTTP Get 请求
-        $response = $this->http->get($this->api.$query);
-        $result = json_decode($response->getBody(), true);
-        if (isset($result['trans_result'][0]['dst'])) {
-//            return str_slug($result['trans_result'][0]['dst']);
-            return str_slug($result['trans_result'][0]['dst']);
-        } else {
-            // 如果百度翻译没有结果，使用拼音作为后备计划。
-            return $this->pinyin($text);
-        }
+        return $this->api.$query;
     }
 
     public function pinyin($text)
