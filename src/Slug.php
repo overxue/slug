@@ -3,6 +3,7 @@
 namespace Overxue\Slug;
 
 use GuzzleHttp\Client;
+use Overtrue\Pinyin\Pinyin;
 
 class Slug
 {
@@ -23,6 +24,10 @@ class Slug
         $appid = $this->config['appId'];
         $key = $this->config['appKey'];
         $salt = time();
+        // 如果没有配置百度翻译，自动使用兼容的拼音方案
+        if (empty($appid) || empty($key)) {
+            return $this->pinyin($text);
+        }
         $sign = md5($appid. $text . $salt . $key);
         // 构建请求参数
         $query = http_build_query([
@@ -45,5 +50,8 @@ class Slug
         }
     }
 
-
+    public function pinyin($text)
+    {
+        return str_slug(app(Pinyin::class)->permalink($text));
+    }
 }
