@@ -9,13 +9,10 @@ class Slug
 {
     protected $api = 'http://api.fanyi.baidu.com/api/trans/vip/translate?';
 
-    protected $http;
-
     protected $config;
 
-    public function __construct(Client $http, array $config = [])
+    public function __construct(array $config = [])
     {
-        $this->http = $http;
         $this->config = $config;
     }
 
@@ -30,8 +27,10 @@ class Slug
             return str_slug($text);
         }
         $url = $this->getTranslateUrl($text);
+        // 实例化 HTTP 客户端
+        $http = new Client;
         // 发送 HTTP Get 请求
-        $response = $this->http->get($url);
+        $response = $http->get($url);
         $result = json_decode($response->getBody(), true);
         if (isset($result['trans_result'][0]['dst'])) {
             return str_slug($result['trans_result'][0]['dst']);

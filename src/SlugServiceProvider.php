@@ -2,7 +2,6 @@
 namespace Overxue\Slug;
 
 use Illuminate\Support\ServiceProvider;
-use GuzzleHttp\Client;
 
 class SlugServiceProvider extends ServiceProvider
 {
@@ -14,7 +13,7 @@ class SlugServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('slug', function () {
-            return new Slug(new Client(), config('services.baidu'));
+            return new Slug(config('services.baidu'));
         });
     }
 }
